@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".KeyLessActivities.FaceEnrollmentActivity">
+
+
+    <FrameLayout
+        android:id="@+id/fl_pic"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </FrameLayout>
+    <FrameLayout
+        android:id="@+id/hole"
+        android:layout_alignParentTop="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/combined_shape">
+    </FrameLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true">
+
+        <com.chaos.view.PinView
+            android:id="@+id/firstPinView"
+            style="@style/PinWidget.PinView"
+            android:layout_marginBottom="30dp"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone"
+            android:layout_width="328dp"
+            android:layout_height="54dp"
+            android:cursorVisible="false"
+            android:textCursorDrawable="@drawable/cursor_shape"
+            android:focusable="true"
+            android:inputType="numberPassword"
+            android:padding="0dp"
+            android:textColor="@color/md_black_1000"
+            android:textSize="8sp"
+            android:textStyle="bold"
+            app:cursorColor="@color/md_black_1000"
+            app:cursorWidth="1dp"
+            app:hideLineWhenFilled="false"
+            app:itemCount="6"
+            app:itemHeight="48dp"
+            android:background="#ccffffff"
+            app:itemRadius="4dp"
+            app:itemSpacing="0dp"
+            app:itemWidth="48dp"
+            app:lineColor="#ccffffff"
+            app:lineWidth="0dp"
+            app:viewType="rectangle" />
+
+        <ImageView
+            android:id="@+id/instruction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/resting_ahead"/>
+
+        <Button
+
+            android:id="@+id/bt_macho"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/enabled"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="25dp"
+            android:onClick="elMacho"
+            />
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_res"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Not ready"
+        android:visibility="invisible"
+        android:textColor="@android:color/black"
+        android:layout_gravity="center"/>
+
+    <Switch
+
+        android:id="@+id/sw_learning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:checked="false"
+        android:text="setLearning"
+        android:visibility="gone"
+        android:enabled="true"
+        android:layout_gravity="center"
+        android:textColor="@android:color/black"/>
+
+    <Switch
+        android:id="@+id/sw_setas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:text="setAS"
+        android:enabled="false"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:textColor="@android:color/black"/>
+
+
+    <Button
+        android:id="@+id/bt_d"
+        android:visibility="invisible"
+        style="@style/Base.TextAppearance.AppCompat.Body1"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="16dp"
+        android:text="Done"
+        android:textAllCaps="false"
+        android:enabled="false"
+        android:textColor="#0E2F44"
+        android:textSize="18sp"
+        android:layout_gravity="center"/>
+
+    <ImageView
+        android:id="@+id/im_pic"
+        android:layout_width="150dp"
+        android:layout_height="200dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:srcCompat="@android:color/black" />
+    <TextView
+        android:id="@+id/errorText"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textColor="#9500f2"
+        android:layout_marginBottom="10dp"
+        android:layout_above="@id/pinLayout"
+        android:text="Pin Not Matching , Please Try Again"
+        />
+
+    <LinearLayout
+        android:id="@+id/pinLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="250dp"
+        android:visibility="gone">
+
+        <com.chaos.view.PinView
+            android:id="@+id/firstPinVi"
+            style="@style/PinWidget.PinView"
+            android:layout_marginBottom="30dp"
+            android:layout_gravity="center_horizontal"
+            android:visibility="visible"
+            android:layout_width="wrap_content"
+            android:layout_height="54dp"
+            android:cursorVisible="false"
+            android:textAlignment="center"
+            android:hint="******"
+            android:focusable="true"
+            android:inputType="numberPassword"
+            android:padding="0dp"
+            android:textColor="@color/md_black_1000"
+            android:textSize="8sp"
+            android:textStyle="bold"
+            app:cursorColor="@color/md_black_1000"
+            app:cursorWidth="1dp"
+            app:hideLineWhenFilled="false"
+            app:itemCount="6"
+            app:itemHeight="48dp"
+            android:background="#ccffffff"
+            app:itemRadius="0dp"
+            app:itemSpacing="8dp"
+            app:itemWidth="48dp"
+            app:lineColor="#ccffffff"
+            app:lineWidth="0dp"
+            app:viewType="rectangle" />
+        <ImageView
+            android:visibility="visible"
+            android:id="@+id/instructionpin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/resting_pin"
+            android:layout_gravity="center_horizontal"/>
+    </LinearLayout>
+</RelativeLayout>
