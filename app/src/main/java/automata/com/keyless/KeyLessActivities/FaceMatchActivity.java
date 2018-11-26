@@ -89,13 +89,6 @@ public class FaceMatchActivity extends AppCompatActivity implements CameraListen
         showCamera = new ShowCamera(getApplicationContext(), camera);
         fl_pic.addView(showCamera);*/
 
-        bt_reset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                iiy.resetAppUser("Guest");
-                tv_res.setText("Init user Guest Enrolls: 0");
-            }
-        });
 
         sw_learning.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -109,29 +102,6 @@ public class FaceMatchActivity extends AppCompatActivity implements CameraListen
             }
         });
 
-
-        bt_pico.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                user = IsItYouSdk.getInstance(getApplicationContext()).getCurrentUser();
-                Log.d("ALON", "User: "+user);
-                Intent intent = new Intent();
-// Show only images, no videos or anything else
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-// Always show the chooser (if there are multiple options available)
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), 10);
-            }
-        });
-
-
-        bt_nani.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(cameraIntent, 20);
-            }
-        });
 
         initIIYSDK();
     }
@@ -199,7 +169,7 @@ public class FaceMatchActivity extends AppCompatActivity implements CameraListen
             p.println((System.currentTimeMillis()/1000)+":"+res);
             p.close();
         } catch (Exception e) {
-            Toast.makeText(this, "Could not write log", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Could not write log", Toast.LENGTH_SHORT).show();
             Log.e("Exception", "File write failed: " + e.toString());
         }
         Log.d("ALON", "Result: "+String.valueOf(res));
@@ -239,7 +209,7 @@ public class FaceMatchActivity extends AppCompatActivity implements CameraListen
                 fnl = "Someone else";
                 break;
         }
-        tv_res.setText(String.valueOf(res)+","+fnl+","+String.valueOf(score)+","+as+" "+enrolls);
+        Toast.makeText(this, (String.valueOf(res)+","+fnl+","+String.valueOf(score)+","+as+" "+enrolls), Toast.LENGTH_SHORT).show();
     }
 
     public void elChapo(View v) {
@@ -340,9 +310,9 @@ public class FaceMatchActivity extends AppCompatActivity implements CameraListen
                 @Override
                 public void run() {
                     tv_res.setText("Init user "+user + " "+enrolls);
-                    bt_s.setEnabled(true);
+                //    bt_s.setEnabled(true);
                     bt_macho.setEnabled(true);
-                    bt_reset.setEnabled(true);
+                  //  bt_reset.setEnabled(true);
                 }
             });
         }

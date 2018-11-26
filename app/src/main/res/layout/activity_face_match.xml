@@ -54,14 +54,6 @@
             app:lineWidth="0dp"
             app:viewType="rectangle" />
 
-        <ImageView
-            android:id="@+id/instruction"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="16dp"
-            android:src="@drawable/resting_ahead"/>
-
         <Button
 
             android:id="@+id/bt_macho"

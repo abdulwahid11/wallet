@@ -143,6 +143,7 @@ public class FaceEnrollmentActivity extends AppCompatActivity implements CameraL
         sw_learning = findViewById(R.id.sw_learning);
         sw_setas = findViewById(R.id.sw_setas);
         myPrefs=getSharedPreferences(FILE_NAME,MODE_PRIVATE);
+        MediaActionSound sound = new MediaActionSound();
 
 
         if (Build.VERSION.SDK_INT < 23) {
@@ -174,8 +175,8 @@ public class FaceEnrollmentActivity extends AppCompatActivity implements CameraL
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(final View v) {
-                MediaActionSound sound = new MediaActionSound();
-                sound.play(MediaActionSound.SHUTTER_CLICK);
+
+            //    sound.play(MediaActionSound.SHUTTER_CLICK);
 
                 int res=counter%3;
                 counter++;
