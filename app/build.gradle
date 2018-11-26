@@ -110,11 +110,9 @@ dependencies {
     implementation 'me.grantland:autofittextview:0.2.1'
     implementation 'com.github.deano2390:MaterialShowcaseView:1.2.0@aar'
     implementation 'com.chaos.view:pinview:1.4.2'
-
-    implementation("com.mikepenz:materialdrawer:5.9.1@aar") {
+    implementation('com.mikepenz:materialdrawer:5.9.1@aar') {
         transitive = true
     }
-
-    implementation fileTree(dir: 'libs', include: ['*.jar',
-                                                   '*.aar'])
+    implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
+    implementation project(':openCVLibrary342')
 }

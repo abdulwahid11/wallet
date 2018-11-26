@@ -41,6 +41,9 @@ import com.isityou.sdk.IsItYouConstants;
 import com.isityou.sdk.IsItYouSdk;
 import com.isityou.sdk.interfaces.CameraListener;
 
+import org.opencv.android.LoaderCallbackInterface;
+import org.opencv.android.OpenCVLoader;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -116,7 +119,11 @@ public class FaceEnrollmentActivity extends AppCompatActivity implements CameraL
         setContentView(R.layout.activity_face_enrollment);
 
 
-
+        if(OpenCVLoader.initDebug()){
+            Toast.makeText(getApplicationContext(), "Loaded Successfully", Toast.LENGTH_LONG).show();
+        }else{
+            Toast.makeText(getApplicationContext(), "Not Loaded Successfully", Toast.LENGTH_LONG).show();
+        }
 
 
 
