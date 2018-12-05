@@ -1,20 +1,30 @@
 package automata.com.keyless.KeyLessActivities;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.ImageFormat;
 import android.graphics.Matrix;
+import android.graphics.Rect;
+import android.graphics.YuvImage;
 import android.hardware.Camera;
+import android.media.Image;
 import android.media.MediaActionSound;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
@@ -25,6 +35,12 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Transformation;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -41,6 +57,7 @@ import com.isityou.sdk.IsItYouConstants;
 import com.isityou.sdk.IsItYouSdk;
 import com.isityou.sdk.interfaces.CameraListener;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -52,19 +69,26 @@ import automata.com.keyless.R;
 
 public class FaceEnrollmentActivity extends AppCompatActivity implements CameraListener {
 
-    InitOperation iiyInitializationThread;
-    TextView tv_res,errorTxt;
-    ImageView inst,pinInst;
-    PinView pinView;
-    Button bt_s,bt_done;// bt_pico, bt_nani, bt_cap, bt_macho, bt_reset;
-    ImageView im_pic;
-    FrameLayout fl_pic,hole;
-    LinearLayout layout;
-    Camera camera;
-    CameraPreview cameraPreview;
-    Switch sw_learning, sw_setas;
-    String pin;
-    SharedPreferences myPrefs;
+
+
+    //VARIABLE DECLARATIONS
+
+    private InitOperation iiyInitializationThread;
+    private TextView tv_res,errorTxt;
+    private ImageView inst,pinInst,overlay;
+    private PinView pinView;
+    private Button bt_s,bt_done;
+    private ImageView im_pic;
+    private FrameLayout fl_pic,hole;
+    private LinearLayout layout;
+    private int r;
+    private Camera camera;
+    private AnimatorSet mAnimationSet;
+    private CameraPreview cameraPreview;
+    private Switch sw_learning, sw_setas;
+    private String pin;
+    private Handler mWaitHandler = new Handler();
+    private SharedPreferences myPrefs;
     public static final String FILE_NAME="keyLessPrefs";
 
     private static final int MY_PERMISSIONS_REQUEST_CAMERA = 123;
@@ -80,12 +104,12 @@ public class FaceEnrollmentActivity extends AppCompatActivity implements CameraL
     private String user;
     private IsItYouSdk iiy;
     boolean pinFlag=true;
-
-    int counter=1;
+    private MediaPlayer mp ;
+    private int counter=1;
     private String username;
 
-    SharedPreferences sp;
-    SharedPreferences.Editor spEdit;
+    private SharedPreferences sp;
+    private SharedPreferences.Editor spEdit;
     private boolean vladimirLernen, vladimirAS;
 
     public static Bitmap RotateBitmap(Bitmap source, float angle)
@@ -94,11 +118,9 @@ public class FaceEnrollmentActivity extends AppCompatActivity implements CameraL
         matrix.postRotate(angle);
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
     }
-
     public static Bitmap ResizeBitmap(Bitmap source, int width, int height) {
         return Bitmap.createScaledBitmap(source, width, height, true);
     }
-
     public static boolean hasPermissions(Context context, String... permissions) {
         if (context != null && permissions != null) {
             for (String permission : permissions) {
@@ -109,32 +131,21 @@ public class FaceEnrollmentActivity extends AppCompatActivity implements CameraL
         }
         return true;
     }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_face_enrollment);
-
-
-
-
-
-
-
-
         sp = getSharedPreferences("iiyDemo", 0);
         spEdit = sp.edit();
-        pinView=(PinView)findViewById(R.id.firstPinVi);
+        pinView=(PinView)findViewById(R.id.firstPinView);
         pinView.setBackgroundDrawable(getResources().getDrawable(R.drawable.edit_text_drawable_white));
         hole=(FrameLayout)findViewById(R.id.hole);
         inst=(ImageView)findViewById(R.id.instruction);
         layout=(LinearLayout)findViewById(R.id.pinLayout);
-
         pinInst=(ImageView)findViewById(R.id.instructionpin);
         iiy = IsItYouSdk.getInstance(getApplicationContext());
         errorTxt=(TextView)findViewById(R.id.errorText);
-
-
+        overlay=(ImageView)findViewById(R.id.anim);
         tv_res = findViewById(R.id.tv_res);
         bt_s = findViewById(R.id.bt_s);
         bt_done=(Button)findViewById(R.id.bt_d);
@@ -143,7 +154,29 @@ public class FaceEnrollmentActivity extends AppCompatActivity implements CameraL
         sw_learning = findViewById(R.id.sw_learning);
         sw_setas = findViewById(R.id.sw_setas);
         myPrefs=getSharedPreferences(FILE_NAME,MODE_PRIVATE);
-        MediaActionSound sound = new MediaActionSound();
+        mp= MediaPlayer.create(FaceEnrollmentActivity.this,R.raw.shutter);
+        ObjectAnimator fadeOut = ObjectAnimator.ofFloat(overlay, "alpha",  1f, .3f);
+        fadeOut.setDuration(150);
+        mAnimationSet = new AnimatorSet();
+        mAnimationSet.play(fadeOut);
+        mAnimationSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                mp.start();
+
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                overlay.setVisibility(View.INVISIBLE);
+
+
+            }
+        });
+
 
 
         if (Build.VERSION.SDK_INT < 23) {
@@ -151,69 +184,153 @@ public class FaceEnrollmentActivity extends AppCompatActivity implements CameraL
         } else {
             if (checkPermission()) {
                 //If you have already permitted the permission
+               // Toast.makeText(this, "here", Toast.LENGTH_SHORT).show();
                 exectueAdterPermissionsGranted();
             }
         }
+
     }
+
+
+
+
+
+
+
+
+
+
+    private class TakePrintScreen extends AsyncTask<Void, String, String> {
+
+
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        @Override
+        protected void onPreExecute() {
+            overlay.setVisibility(View.VISIBLE);
+
+
+            mAnimationSet.start();
+
+
+
+        }
+
+
+        @Override
+        protected String doInBackground(Void... params) {
+
+
+            takePic();
+            r=  enrollPic();
+            return "";
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        @Override
+        protected void onPostExecute(String result) {
+
+            int res=counter%3;
+           // Toast.makeText(FaceEnrollmentActivity.this, ""+r, Toast.LENGTH_SHORT).show();
+            switch (r){
+                case 1:
+                    counter++;
+
+                    if(counter==4){
+
+
+                        mWaitHandler.postDelayed(new Runnable() {
+
+                            @Override
+                            public void run() {
+
+                                //The following code will execute after the 5 seconds.
+
+                                try {
+
+                                    hole.setBackground(getDrawable(R.drawable.combined_shape_full));
+                                    inst.setVisibility(View.GONE);
+                                    layout.setVisibility(View.VISIBLE);
+                                    //inst.setImageDrawable(getDrawable(R.drawable.resting_pin));
+                                    //  pinView.setVisibility(View.VISIBLE);
+                                    //layout.setVisibility(View.VISIBLE);
+                                    //pinInst.setVsisibility(View.VISIBLE);
+                                    pinView.requestFocus();
+                                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                    imm.showSoftInput(pinView, InputMethodManager.SHOW_IMPLICIT);
+                                    bt_s.setVisibility(View.GONE);
+                                } catch (Exception ignored) {
+                                    ignored.printStackTrace();
+                                }
+                            }
+                        }, 1000);  // Give a 1 seconds delay.
+                    }
+                    else {
+
+                        if (res == 0) {
+                            inst.setImageDrawable(getDrawable(R.drawable.resting_ahead));
+                        } else if (res == 1) {
+
+                            inst.setImageDrawable(getDrawable(R.drawable.resting_right));
+                        } else {
+
+                            inst.setImageDrawable(getDrawable(R.drawable.resting));
+
+                        }
+                    }
+                    break;
+                case 10:
+                    Toast.makeText(FaceEnrollmentActivity.this, "No Face detected", Toast.LENGTH_SHORT).show();
+                    break;
+                case 3:
+                    Toast.makeText(FaceEnrollmentActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                    break;
+                case 4:
+                    Toast.makeText(FaceEnrollmentActivity.this, "No Enrollments", Toast.LENGTH_SHORT).show();
+                    break;
+                case 5:
+                    Toast.makeText(FaceEnrollmentActivity.this, "User Blocked", Toast.LENGTH_SHORT).show();
+                    break;
+                case 6:
+                    Toast.makeText(FaceEnrollmentActivity.this, "Unidentify Error", Toast.LENGTH_SHORT).show();
+                    break;
+                case 7:
+                    Toast.makeText(FaceEnrollmentActivity.this, "Move and try again", Toast.LENGTH_SHORT).show();
+                    break;
+                case 8:
+                    Toast.makeText(FaceEnrollmentActivity.this, "Face is too close", Toast.LENGTH_SHORT).show();
+                    break;
+
+
+            }
+        }
+    }
+
+
+
+
+
     public void exectueAdterPermissionsGranted(){
 
-
-        sw_learning.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                iiy.setLearning(isChecked);
-            }
-        });
-
-        sw_setas.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                iiy.setAS(isChecked);
-            }
-        });
+        iiy.setLearning(true);
+        iiy.setAS(true);
 
 
+     //   Toast.makeText(this, "now here", Toast.LENGTH_SHORT).show();
         bt_s.setOnClickListener(new View.OnClickListener() {
+
+
+
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(final View v) {
 
-            //    sound.play(MediaActionSound.SHUTTER_CLICK);
 
-                int res=counter%3;
-                counter++;
-
-
-                takePic();
-                enrollPic();
-                if(counter==4){
-
-                    hole.setBackground(getDrawable(R.drawable.combined_shape_full));
-                    inst.setVisibility(View.GONE);
-                    layout.setVisibility(View.VISIBLE);
-                    //inst.setImageDrawable(getDrawable(R.drawable.resting_pin));
-                    //  pinView.setVisibility(View.VISIBLE);
-                    //layout.setVisibility(View.VISIBLE);
-                    //pinInst.setVisibility(View.VISIBLE);
-                    pinView.requestFocus();
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.showSoftInput(pinView, InputMethodManager.SHOW_IMPLICIT);
-                    bt_s.setVisibility(View.GONE);
-                }
-                else {
-
-                    if (res == 0) {
-                        inst.setImageDrawable(getDrawable(R.drawable.resting_ahead));
-                    } else if (res == 1) {
-
-                        inst.setImageDrawable(getDrawable(R.drawable.resting_right));
-                    } else {
-
-                        inst.setImageDrawable(getDrawable(R.drawable.resting));
-
-                    }
-                }
+   new TakePrintScreen().execute();
 
             }
         });
+
+
 
 
         initIIYSDK();
@@ -255,8 +372,6 @@ public class FaceEnrollmentActivity extends AppCompatActivity implements CameraL
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
 
-
-
                     if(pinView.getText().toString().length()!=6){
                         pinView.setBackgroundDrawable(getResources().getDrawable(R.drawable.edit_text_drawable));
                         errorTxt.setVisibility(View.VISIBLE);
@@ -268,7 +383,6 @@ public class FaceEnrollmentActivity extends AppCompatActivity implements CameraL
 
                     if(pinFlag==true)
                     {
-
                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(pinView.getWindowToken(), 0);
 
@@ -304,7 +418,7 @@ public class FaceEnrollmentActivity extends AppCompatActivity implements CameraL
                             editor.putString("pin",pin);
                             editor.apply();
 
-                           startActivity(new Intent(FaceEnrollmentActivity.this,FaceMatchActivity.class));
+                           startActivity(new Intent(FaceEnrollmentActivity.this,GraphActivity.class));
                         }
                         else{
                             //displayErrorMsg
@@ -480,32 +594,40 @@ public class FaceEnrollmentActivity extends AppCompatActivity implements CameraL
             //Toast.makeText(this, "its null", Toast.LENGTH_SHORT).show();
         }
         image = cameraPreview.getCurrentFrame();
+
         Log.d("ALON", "Length: "+image.length);
+
+        YuvImage yuvImage = new YuvImage(image, ImageFormat.NV21, 480, 640, null);
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        yuvImage.compressToJpeg(new Rect(0, 0, 480, 640), 100, os);
+        byte[] jpegByteArray = os.toByteArray();
+        Bitmap mipap = BitmapFactory.decodeByteArray(jpegByteArray, 0, jpegByteArray.length);
+
 
      //   Bitmap mipap = BitmapFactory.decodeByteArray(image, 0, image.length);
 
-       // Toast.makeText(this, ""+mipap.getHeight()+" "+mipap.getWidth(), Toast.LENGTH_SHORT).show();
+      //  Toast.makeText(this, ""+mipap.getHeight()+" "+mipap.getWidth(), Toast.LENGTH_SHORT).show();
 
 
-        Bitmap mipap = automata.com.keyless.FaceDetectionUtils.Utils.getBitmapImageFromYUV(image, 480, 640);
+       // Bitmap mipap = automata.com.keyless.FaceDetectionUtils.Utils.getBitmapImageFromYUV(image, 480, 640);
 
 
         if (mipap != null) {
             //Bitmap rot = RotateBitmap(mipap, 90);
-            im_pic.setImageBitmap(mipap);
+          //  im_pic.setImageBitmap(mipap);
         } else {
             Log.d("ALON", "es ist null");
         }
     }
 
-    public void enrollPic() {
+    public int enrollPic() {
         if (image == null) {
             Log.d("ALON", "Image is null");
-            return;
+            return -20;
         }
         if (user == null || user.equals("")) {
             Log.d("ALON", "User is null");
-            return;
+            return -20;
         }
                 /*ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
@@ -522,10 +644,10 @@ public class FaceEnrollmentActivity extends AppCompatActivity implements CameraL
         int res = IsItYouSdk.getInstance(getApplicationContext()).saveEnrollment(image, 0);
         Log.d("ALON", "Result: "+String.valueOf(res));
         String enrolls = "Enrolls: "+iiy.getNumOfEnrolls();
-        tv_res.setText("Result: "+String.valueOf(res)+" "+enrolls);
+      //  tv_res.setText("Result: "+String.valueOf(res)+" "+enrolls);
 
-        Toast.makeText(this, ""+"Result: "+String.valueOf(res)+" "+enrolls, Toast.LENGTH_SHORT).show();
 
+        return res;
     }
 
     public void matchPic() {

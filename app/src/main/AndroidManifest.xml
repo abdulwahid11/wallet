@@ -67,18 +67,16 @@
         <activity
             android:name=".KeyLessActivities.FaceEnrollmentActivity"
             android:theme="@style/AppTheme.NoActionBar2">
+        </activity>
+        <activity android:name=".KeyLessActivities.GraphActivity" />
+        <activity
+            android:name=".KeyLessActivities.SplashActivity"
+            android:theme="@style/AppTheme.NoActionBar2">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <activity android:name=".KeyLessActivities.GraphActivity" />
-        <activity
-            android:name=".KeyLessActivities.SplashActivity"
-            android:theme="@style/AppTheme.NoActionBar2">
-
         </activity>
         <activity
             android:name=".activities.MainActivity"
@@ -170,13 +168,13 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-8285849835347571~6235180375" />
 
-        <activity android:name=".KeyLessActivities.FaceMatchActivity"
-            android:theme="@style/AppTheme.NoActionBar2"/>
-
-        <activity android:name=".KeyLessActivities.LogInActivity"
-            android:theme="@style/AppTheme.NoActionBar2">
-
-        </activity>
+        <activity
+            android:name=".KeyLessActivities.FaceMatchActivity"
+            android:theme="@style/AppTheme.NoActionBar2" />
+        <activity
+            android:name=".KeyLessActivities.LogInActivity"
+            android:theme="@style/AppTheme.NoActionBar2"></activity>
+        <activity android:name=".KeyLessActivities.PinMatchActivity"></activity>
     </application>
 
 </manifest>

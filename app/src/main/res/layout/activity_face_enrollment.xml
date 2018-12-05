@@ -25,34 +25,6 @@
             android:orientation="vertical"
             android:layout_alignParentBottom="true">
 
-            <com.chaos.view.PinView
-                android:id="@+id/firstPinView"
-                style="@style/PinWidget.PinView"
-                android:layout_marginBottom="30dp"
-                android:layout_gravity="center_horizontal"
-                android:visibility="gone"
-                android:layout_width="328dp"
-                android:layout_height="54dp"
-                android:cursorVisible="false"
-                android:textCursorDrawable="@drawable/cursor_shape"
-                android:focusable="true"
-                android:inputType="numberPassword"
-                android:padding="0dp"
-                android:textColor="@color/md_black_1000"
-                android:textSize="8sp"
-                android:textStyle="bold"
-                app:cursorColor="@color/md_black_1000"
-                app:cursorWidth="1dp"
-                app:hideLineWhenFilled="false"
-                app:itemCount="6"
-                app:itemHeight="48dp"
-                android:background="#ccffffff"
-                app:itemRadius="4dp"
-                app:itemSpacing="0dp"
-                app:itemWidth="48dp"
-                app:lineColor="#ccffffff"
-                app:lineWidth="0dp"
-                app:viewType="rectangle" />
 
             <ImageView
                 android:id="@+id/instruction"
@@ -75,6 +47,16 @@
 
         </LinearLayout>
 
+        <ImageView
+            android:id="@+id/anim"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:alpha="0.5"
+            android:src="@drawable/black_rectangle"
+            android:visibility="gone"/>
+
+
     <TextView
         android:id="@+id/tv_res"
         android:layout_width="wrap_content"
@@ -94,7 +76,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="20dp"
-        android:checked="false"
+        android:checked="true"
         android:text="setLearning"
         android:visibility="gone"
         android:enabled="true"
@@ -111,8 +93,9 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="20dp"
         android:text="setAS"
-        android:enabled="false"
+        android:enabled="true"
         android:visibility="gone"
+
         android:layout_gravity="center"
         android:textColor="@android:color/black"/>
 
@@ -166,17 +149,17 @@
         android:layout_marginBottom="250dp"
         android:visibility="gone">
 
+
         <com.chaos.view.PinView
-            android:id="@+id/firstPinVi"
+            android:id="@+id/firstPinView"
             style="@style/PinWidget.PinView"
             android:layout_marginBottom="30dp"
             android:layout_gravity="center_horizontal"
             android:visibility="visible"
-            android:layout_width="wrap_content"
+            android:layout_width="328dp"
             android:layout_height="54dp"
             android:cursorVisible="false"
-            android:textAlignment="center"
-            android:hint="******"
+            android:textCursorDrawable="@drawable/cursor_shape"
             android:focusable="true"
             android:inputType="numberPassword"
             android:padding="0dp"
@@ -189,12 +172,13 @@
             app:itemCount="6"
             app:itemHeight="48dp"
             android:background="#ccffffff"
-            app:itemRadius="0dp"
-            app:itemSpacing="8dp"
+            app:itemRadius="4dp"
+            app:itemSpacing="0dp"
             app:itemWidth="48dp"
             app:lineColor="#ccffffff"
             app:lineWidth="0dp"
             app:viewType="rectangle" />
+
         <ImageView
             android:visibility="visible"
             android:id="@+id/instructionpin"

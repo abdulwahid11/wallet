@@ -54,16 +54,27 @@
             app:lineWidth="0dp"
             app:viewType="rectangle" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:gravity="center_horizontal"
+            android:letterSpacing="0.09"
+            android:padding="20dp"
+            android:text="TAKE ONE PHOTO LOOKING STRAIGHT AHEAD INTO THE CAMERA"
+            android:textColor="#ffffff"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
         <Button
 
             android:id="@+id/bt_macho"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/enabled"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="25dp"
-            android:onClick="elMacho"
-            />
+            android:background="@drawable/circle"
+            android:onClick="elMacho" />
 
 
     </LinearLayout>
@@ -126,6 +137,36 @@
         android:textColor="#0E2F44"
         android:textSize="18sp"
         android:layout_gravity="center"/>
+
+    <com.chaos.view.PinView
+        android:id="@+id/pinV"
+        style="@style/PinWidget.PinView"
+        android:layout_marginBottom="30dp"
+        android:layout_gravity="center_horizontal"
+
+        android:visibility="visible"
+        android:layout_width="328dp"
+        android:layout_height="54dp"
+        android:cursorVisible="false"
+        android:textCursorDrawable="@drawable/cursor_shape"
+        android:focusable="true"
+        android:inputType="numberPassword"
+        android:padding="0dp"
+        android:textColor="@color/md_black_1000"
+        android:textSize="8sp"
+        android:textStyle="bold"
+        app:cursorColor="@color/md_black_1000"
+        app:cursorWidth="1dp"
+        app:hideLineWhenFilled="false"
+        app:itemCount="6"
+        app:itemHeight="48dp"
+        android:background="#ccffffff"
+        app:itemRadius="4dp"
+        app:itemSpacing="0dp"
+        app:itemWidth="48dp"
+        app:lineColor="#ccffffff"
+        app:lineWidth="0dp"
+        app:viewType="rectangle" />
 
     <ImageView
         android:id="@+id/im_pic"
