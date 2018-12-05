@@ -57,6 +57,9 @@ import com.isityou.sdk.IsItYouConstants;
 import com.isityou.sdk.IsItYouSdk;
 import com.isityou.sdk.interfaces.CameraListener;
 
+import org.opencv.android.LoaderCallbackInterface;
+import org.opencv.android.OpenCVLoader;
+
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -135,6 +138,19 @@ public class FaceEnrollmentActivity extends AppCompatActivity implements CameraL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_face_enrollment);
+
+
+
+        if(OpenCVLoader.initDebug()){
+            Toast.makeText(getApplicationContext(), "Loaded Successfully", Toast.LENGTH_LONG).show();
+        }else{
+            Toast.makeText(getApplicationContext(), "Not Loaded Successfully", Toast.LENGTH_LONG).show();
+        }
+
+
+
+
+
         sp = getSharedPreferences("iiyDemo", 0);
         spEdit = sp.edit();
         pinView=(PinView)findViewById(R.id.firstPinView);
